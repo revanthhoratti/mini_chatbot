@@ -1,0 +1,24 @@
+services:
+  chroma:
+    image: chromadb/chroma
+    ports:
+      - "8001:8000"
+    volumes:
+      - chroma_data:/data
+
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - OLLAMA_URL=http://host.docker.internal:11434/v1
+      - MODEL=llama3.2
+      - EMBED_MODEL=nomic-embed-text
+      - TEMPERATURE=0.2
+      - CHROMA_HOST=chroma
+      - CHROMA_PORT=8000
+    depends_on:
+      - chroma
+
+volumes:
+  chroma_data:
